@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/homePage.css"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <title>Sign in</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+        body{
+            font-family: 'Inter', sans-serif;
+
+        }
+        .signUpHeading{
+          font-family: 'Inter', sans-serif;
+          font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+        }
+       ::placeholder{
+        font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;     }
+
+  .pageChange{
+    font-family: 'Inter', sans-serif;
+
+  }
+      </style>
+</head>
+<body>
+    <div class="mainSignupDiv">
+        <img src="/images/pixel_mba_logo.png" class="logoImgSignup" alt="">
+        <div class="signUpBox">
+            <%- include('../partials/flash') %>
+            <form action="/user/login" method="post" class="formSignIn" onsubmit="return validateForm()">
+                <h3 class="signUpHeading">Sign In with Your Email</h3>
+          
+                <input placeholder="email@gmail.com" class="input-field" type="email" id="email" name="username" required>
+                <!-- Hide the password input field -->
+                <input type="hidden" name="password" id="password" value="">
+
+                <button type="submit" class="signInButton" id="signInButton">Sign in</button>
+            </form>
+            <p class="pageChange">Don't have an account? <a href="/">Sign up</a></p>
+        </div>
+    </div>
+
+    <script>
+        function validateForm() {
+            var email = document.getElementById("email").value;
+            if (email.trim() === "") {
+                alert("Please fill in the email field.");
+                return false;
+            }
+            return true;
+        }
+        // Change the button text
+        document.getElementById("signInButton").addEventListener("click", function () {
+            // Set the hidden password field value to the email
+            document.getElementById("password").value = document.getElementById("email").value;
+
+            // Change the button text
+            this.textContent = "Signing in...";
+            // You can also add additional styling or loading animation if needed
+        });
+    </script>
+</body>
+</html>

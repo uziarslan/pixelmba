@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+  <link rel="stylesheet" href="/stylesheets/homePage.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz@9..40&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <title>Pixels</title>
+</head>
+
+<body>
+  <div>
+    <div class="top">
+      <img src="/images/pixel_mba_logo.png" class="topLogo" alt="" />
+      <span class="myrow">
+        <% if(user) {%>
+        <p class="totalpixel">Pixels: <%= user.pixelsBoughtCount %></p>
+        <form action="/create-checkout-session" method="post"><button class="btn btn-success myrow" onclick="handleBuyNow()">
+            Buy pixel
+          </button></form>
+        <% } else { %>
+        <button class="sponsorshipButton" type="button" id="sponsorships" data-bs-toggle="modal" data-bs-target="#sponsorshipsModal" data-placement="top">Sponsorships</button> <a href="/" class="text-decoration-none"><button class="btn btn-success myrow">
+            Sign up
+          </button></a>
+        <% } %>
+      </span>
+    </div>
+    <%- include("../partials/flash") %>
+    <div class="inludeText">
+      <p class="topParaText">
+        Help me finance my MBA at INSEAD (25J) by buying a pixel. With a €10 contribution you will earn your spot on the internet forever and get access to <button class="exclusivePerks" type="button" id="myExclusiveModal" data-bs-toggle="modal" data-bs-target="#exclusivModel">exclusive perks.</button>
+      </p>
+    </div>
+    <div class="secondHeading">
+      <div class="emptyDiv"></div>
+      <div class="centeredElement">
+        <div class="circle"></div>
+        <p class="centeredElementText">
+          <b>€<%= (tps.pixelsBoughtByUsers * 10).toLocaleString() %></b> raised of €120,000 goal
+        </p>
+      </div>
+      <div class="pixelsLeft">
+        <div class="greenSmallDiv"></div>
+        <%= (tps.totalPixels).toLocaleString() %> pixels left
+      </div>
+    </div>
+  </div>
+  <div id="main-container" class="pb-4">
+    <% for (let i=1; i <= 12000; i++) { %>
+    <% const pixel=pixelData.find(p=> p.pixelIndex === i); %>
+    <% if (user) { %>
+    <% if (pixel) { %>
+    <a href="<%=pixel.pixelUrl%>" target="_blank">
+      <div class="inner-div" style="<%= pixel.image ? 'background-image: url(' + pixel.image + ');' : 'background-color: ' + pixel.pixelColor + ';' %>" id="<%= 'div' + i %>">
+      </div>
+    </a>
+    <% } else { %>
+    <% if (user.pixelsBoughtCount === 0) { %>
+    <button class="btnfixed custom-popover">
+      <div class="inner-div" id="<%= 'div' + i %>"></div>
+      <div class="popover-content afterSignin">
+        You have 0 pixels. Buy Pixels now.
+      </div>
+    </button>
+    <% } else { %>
+    <button onclick="addIndex('<%=i%>')" type="button" id="myModal" data-bs-toggle="modal" class="btnfixed custom-popover" data-bs-target="#exampleModal" data-placement="top">
+      <div class="inner-div" id="<%= 'div' + i %>"></div>
+      <div style="width: 140px !important;" class="popover-content afterSignin">
+        You have <%= user.pixelsBoughtCount %> pixels.
+      </div>
+    </button>
+    <% } %>
+    <% } %>
+    <% } else { %>
+    <% if (pixel) { %>
+    <a href="<%=pixel.pixelUrl%>" target="_blank">
+      <div class="inner-div" style="<%= pixel.image ? 'background-image: url(' + pixel.image + ');' : 'background-color: ' + pixel.pixelColor + ';' %>" id="<%= 'div' + i %>">
+      </div>
+    </a>
+    <% } else { %>
+    <a href="/" class="btnfixed custom-popover" data-bs-placement="top">
+      <div class="inner-div" id="<%= 'div' + i %>"></div>
+      <div class="popover-content">
+        Sign up to buy a pixel
+      </div>
+    </a>
+    <% } %>
+    <% } }%>
+  </div>
+  <%- include("../partials/model") %>
+  <%- include("../partials/exclusive") %>
+  <%- include("../partials/sponsorships") %>
+
+
+</body>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const checkboxes = document.querySelectorAll(".form-check-input");
+    const emailLink = document.getElementById("emailLink");
+
+    checkboxes.forEach(function(checkbox) {
+      checkbox.addEventListener("change", function() {
+        updateEmailSubject();
+      });
+    });
+
+    function updateEmailSubject() {
+      const checkedCheckboxes = Array.from(checkboxes)
+        .filter(
+          (checkbox) => checkbox.checked
+        );
+
+      if (checkedCheckboxes.length > 0) {
+        const subjects = checkedCheckboxes.map(
+          (checkbox) => checkbox.nextElementSibling.textContent.trim()
+        );
+
+        const joinedSubjects = subjects.join(", ");
+        const encodedSubjects = encodeURIComponent(joinedSubjects);
+        emailLink.href = `mailto:info@pixelmba.com?subject=${encodedSubjects}`;
+      } else {
+        emailLink.href = "mailto:info@pixelmba.com";
+      }
+    }
+  });
+
+</script>
+
+<script>
+  function addIndex(index) {
+    let display = document.getElementById('pixelDisplay')
+    let pixelInput = document.getElementById('pixelIndex')
+    pixelInput.value = index
+    display.innerHTML = index
+  }
+
+
+
+  // Add an event listener to the color code input field
+  function colorchange() {
+
+    // Get references to the color code and color input elements
+    var colorCodeInput = document.getElementById('colorCode');
+    var pixelColorInput = document.getElementById('pixelColor');
+    // Get the value of the color code input
+    var colorCodeValue = colorCodeInput.value;
+
+    // Set the value of the color input to the color code value
+    pixelColorInput.value = colorCodeValue;
+  }
+  // Add an event listener to the color code input field
+  function colorchangefill() {
+
+    // Get references to the color code and color input elements
+    var pixelColorInput = document.getElementById('colorCode');
+    var colorCodeInput = document.getElementById('pixelColor');
+    // Get the value of the color code input
+    var colorCodeValue = colorCodeInput.value;
+
+    // Set the value of the color input to the color code value
+    pixelColorInput.value = colorCodeValue;
+  }
+
+
+
+  var myModal = document.getElementById("myModal");
+  var myExclusiveModal = document.getElementById("myExclusiveModal");
+  var sponsorships = document.getElementById("sponsorships");
+
+
+
+
+  var myInput = document.getElementById("myInput");
+
+  myModal.addEventListener("shown.bs.modal", function() {
+    myInput.focus();
+  });
+  myExclusiveModal.addEventListener("shown.bs.mineExlusive", function() {
+    myInput.focus();
+  });
+  sponsorships.addEventListener("shown.bs.minesponsorships", function() {
+    myInput.focus();
+  });
+
+</script>
+
+</html>

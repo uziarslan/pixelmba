@@ -1,0 +1,35 @@
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="z-index: 9999999">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Get Pixel Number <span id="pixelDisplay" style="color: #26945e"></span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Pixel Buyer Form -->
+        <form action="/submit_pixel" method="post" enctype="multipart/form-data">
+          <!-- Pixel URL Input -->
+
+          <input type="url" id="pixelUrl" class="form-control mb-3" name="pixelUrl" placeholder="Pixel URL*" required />
+
+          <!-- Pixel Image Upload -->
+          <input name="image" type="file" class="form-control " id="inputGroupFile01" style="height: auto !important; padding: 12px 10px;">
+          <!-- Color Selection -->
+          <p class="choosePixelColor">
+            or choose a color for your pixel
+          </p>
+          <input type="color" id="pixelColor" name="pixelColor" class="mb-3" oninput="colorchangefill()" style="width: 90px; height: 90px" required />
+          <input id="pixelIndex" type="hidden" name="pixelIndex" value="" />
+          <input id="colorCode" type="text" class="form-control mb-3" oninput="colorchange()" placeholder="Color code" value="#BDBDBD" />
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-primary form-control btn-no-outline" style="background-color: #26945e !important">
+            Submit for approval
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

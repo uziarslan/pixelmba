@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/stylesheets/homePage.css">
+  <title>Pixel || Signup</title>
+</head>
+
+<body>
+  <div class="mainSignupDiv">
+    <img src="/images/pixel_mba_logo.png" class="logoImgSignup" alt="">
+    <div class="signUpBox">
+      <%- include("../partials/flash") %>
+      <form id="signupForm" class="formSignup">
+        <h3 class="signUpHeading">Sign Up with Your Email</h3>
+        <input id="emailInput" required placeholder="email@gmail.com" class="input-field" type="email">
+        <button type="button" class="signUpButton" id="signupButton">Sign up</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    function validateForm() {
+      var email = document.getElementById("emailInput")
+        .value;
+      if (email.trim() === "") {
+        alert("Please fill in the email field.");
+        return false;
+      }
+      return true;
+    }
+
+    document.getElementById('signupButton')
+      .addEventListener('click', function() {
+        const email = document.getElementById('emailInput')
+          .value;
+
+        // Check if the email is valid (you might want to add more validation here)
+
+        // Change the button text and background color
+        this.textContent = '✓ Please check your email ';
+        this.style.backgroundColor = '#53cc92';
+
+        // Send a POST request to the server without page refresh
+        fetch('/usersignup', {
+            method: 'POST'
+            , headers: {
+              'Content-Type': 'application/json'
+            , }
+            , body: JSON.stringify({
+              email
+            })
+          , })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json()
+            // Handle success (optional)
+            console.log('Request successful');
+          })
+          .catch(error => {
+            // Handle error (optional)
+            console.error('There was a problem with the fetch operation:', error);
+          });
+      });
+
+  </script>
+
+</body>
+
+</html>
